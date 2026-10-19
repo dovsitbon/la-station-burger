@@ -15,7 +15,7 @@ const valid = {
 function req(body, { json = true, ip = '1.1.1.1', headers = {} } = {}) {
   const form = new FormData();
   for (const [k, v] of Object.entries(body)) form.append(k, v);
-  return new Request('https://site.test/api/contact', {
+  return new Request('https://site.test/api/contact/', {
     method: 'POST',
     headers: { accept: json ? 'application/json' : 'text/html', 'x-forwarded-for': ip, host: 'site.test', ...headers },
     body: form,
