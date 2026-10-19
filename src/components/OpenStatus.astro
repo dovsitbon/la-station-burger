@@ -1,0 +1,85 @@
+---
+/**
+ * Indique « Ouvert / Fermé » en temps réel (heure de Paris), calculé dans le navigateur
+ * à partir des horaires de site.ts. Sans JavaScript, rien n’est affiché.
+ */
+import { site } from '../data/site';
+interface Props {
+  class?: string;
+}
+const hours = JSON.stringify(site.hours.map(({ day, open, close }) => ({ day, open, close })));
+---
+
+<p class:list={['open-status', Astro.props.class]} data-open-status data-hours={hours} aria-live="polite" hidden>
+  <span class="dot" aria-hidden="true"></span>
+  <span data-open-text></span>
+</p>
+
+<style>
+  .open-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #d06a5a;
+    box-shadow: 0 0 0 4px rgba(208, 106, 90, 0.18);
+  }
+  .open-status[data-state='open'] .dot {
+    background: #7cc08a;
+    box-shadow: 0 0 0 4px rgba(124, 192, 138, 0.18);
+  }
+</style>
+
+<script>
+  type H = { day: number; open: string; close: string };
+  const toMin = (t: string) => {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  };
+  const fmt = (t: string) => t.replace(':00', 'h').replace(':', 'h');
+  const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+
+  function parisNow() {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Paris',
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(new Date());
+    const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
+    const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday'));
+    return { day, min: Number(get('hour')) * 60 + Number(get('minute')) };
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-open-status]').forEach((el) => {
+    const hours: H[] = JSON.parse(el.dataset.hours || '[]');
+    const { day, min } = parisNow();
+    const today = hours.find((h) => h.day === day);
+    const text = el.querySelector('[data-open-text]')!;
+    if (today && min >= toMin(today.open) && min < toMin(today.close)) {
+      el.dataset.state = 'open';
+      text.textContent = `Ouvert maintenant · jusqu’à ${fmt(today.close)}`;
+    } else {
+      el.dataset.state = 'closed';
+      let next = '';
+      for (let i = 0; i < 8; i++) {
+        const d = (day + i) % 7;
+        const h = hours.find((x) => x.day === d);
+        if (!h) continue;
+        if (i === 0 && min >= toMin(h.open)) continue;
+        next = i === 0 ? `aujourd’hui à ${fmt(h.open)}` : i === 1 ? `demain à ${fmt(h.open)}` : `${days[d]} à ${fmt(h.open)}`;
+        break;
+      }
+      text.textContent = next ? `Fermé · ouvre ${next}` : 'Fermé';
+    }
+    el.hidden = false;
+  });
+</script>

@@ -1,0 +1,87 @@
+---
+import Icon from './Icon.astro';
+import { site, telHref, mapsDirectionsUrl, activeOrdering } from '../data/site';
+---
+
+<div class="order-grid">
+  <article class="order-card" data-reveal style="--i:0">
+    <p class="order-card__kicker">Livraison</p>
+    <h3>Faites-vous livrer</h3>
+    <p class="order-card__text">Commandez en ligne sur les plateformes partenaires du restaurant.</p>
+    <div class="order-card__actions">
+      {
+        activeOrdering.map((o, i) => (
+          <a class:list={['btn', i === 0 && 'btn--primary']} href={o.url} target="_blank" rel="noopener">
+            {o.label}
+            <Icon name="external" />
+          </a>
+        ))
+      }
+    </div>
+    <p class="order-card__fine">Tarifs et disponibilités fixés par chaque plateforme.</p>
+  </article>
+
+  <article class="order-card" data-reveal style="--i:1">
+    <p class="order-card__kicker">À emporter</p>
+    <h3>Appelez, on prépare</h3>
+    <p class="order-card__text">Passez votre commande par téléphone et récupérez-la au comptoir, 41 rue de la Gare.</p>
+    <div class="order-card__actions">
+      <a class="btn btn--primary" href={telHref}><Icon name="phone" /> {site.phone.display}</a>
+    </div>
+  </article>
+
+  <article class="order-card" data-reveal style="--i:2">
+    <p class="order-card__kicker">Sur place</p>
+    <h3>Installez-vous</h3>
+    <p class="order-card__text">Le restaurant vous accueille rue de la Gare, accessible en Transilien ligne H (gare de Deuil–Montmagny).</p>
+    <div class="order-card__actions">
+      <a class="btn btn--primary" href={mapsDirectionsUrl} target="_blank" rel="noopener"><Icon name="pin" /> Itinéraire</a>
+      <a class="btn" href="/infos-pratiques/">Horaires</a>
+    </div>
+  </article>
+</div>
+
+<style>
+  .order-grid {
+    display: grid;
+    gap: 1rem;
+  }
+  .order-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--ink-2);
+  }
+  .order-card h3 {
+    font-size: 1.6rem;
+  }
+  .order-card__kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--copper);
+  }
+  .order-card__text {
+    color: var(--cream-muted);
+  }
+  .order-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+  .order-card__fine {
+    font-size: 0.8rem;
+    color: var(--cream-muted);
+  }
+  @media (min-width: 860px) {
+    .order-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

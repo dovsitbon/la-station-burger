@@ -1,0 +1,339 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { site, fullAddress, telHref, mapsDirectionsUrl } from '../data/site';
+
+const subjects = ['Question', 'Groupe ou événement', 'Avis sur votre visite', 'Partenariat / presse', 'Autre'];
+---
+
+<BaseLayout
+  title="Contact"
+  description={`Contactez La Station Burger à Deuil-la-Barre : téléphone ${site.phone.display}, e-mail, formulaire de contact, ${fullAddress}.`}
+  breadcrumb={[{ name: 'Contact', path: '/contact/' }]}
+>
+  <PageHeader
+    eyebrow="Contact"
+    title="Une question ? Écrivez-nous"
+    lead="Pour commander ou pour une réponse immédiate, le plus simple reste le téléphone."
+  />
+
+  <section class="section">
+    <div class="container contact-grid">
+      <aside class="stack coords">
+        <a class="coord" href={telHref}>
+          <Icon name="phone" />
+          <span><small>Téléphone</small>{site.phone.display}</span>
+        </a>
+        <a class="coord" href={`mailto:${site.email}`}>
+          <Icon name="mail" />
+          <span><small>E-mail</small>{site.email}</span>
+        </a>
+        <a class="coord" href={mapsDirectionsUrl} target="_blank" rel="noopener">
+          <Icon name="pin" />
+          <span><small>Adresse</small>{fullAddress}</span>
+        </a>
+        <a class="coord" href={site.social.instagram.url} target="_blank" rel="noopener">
+          <Icon name="instagram" />
+          <span><small>Instagram</small>{site.social.instagram.handle}</span>
+        </a>
+      </aside>
+
+      <form class="form" action="/api/contact" method="post" novalidate data-contact-form>
+        <div class="form__row">
+          <div class="field">
+            <label for="name">Nom <span aria-hidden="true">*</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" required maxlength="100" aria-describedby="name-error" />
+            <p class="field__error" id="name-error" data-error-for="name"></p>
+          </div>
+          <div class="field">
+            <label for="email">E-mail <span aria-hidden="true">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" spellcheck="false" required maxlength="160" aria-describedby="email-error" />
+            <p class="field__error" id="email-error" data-error-for="email"></p>
+          </div>
+        </div>
+        <div class="form__row">
+          <div class="field">
+            <label for="phone">Téléphone <span class="opt">(facultatif)</span></label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" />
+          </div>
+          <div class="field">
+            <label for="subject">Sujet</label>
+            <select id="subject" name="subject">
+              {subjects.map((s) => <option value={s}>{s}</option>)}
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="message">Message <span aria-hidden="true">*</span></label>
+          <textarea id="message" name="message" rows="6" required minlength="10" maxlength="3000" aria-describedby="message-hint message-error"></textarea>
+          <p class="field__hint" id="message-hint">Pas de commande par formulaire : appelez le {site.phone.display} ou passez par la livraison.</p>
+          <p class="field__error" id="message-error" data-error-for="message"></p>
+        </div>
+
+        <div class="hp" aria-hidden="true">
+          <label for="website">Ne pas remplir</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <input type="hidden" name="t" value="" data-form-time />
+
+        <div class="field field--check">
+          <input id="consent" name="consent" type="checkbox" value="yes" required aria-describedby="consent-error" />
+          <label for="consent">
+            J’accepte que mes coordonnées soient utilisées uniquement pour répondre à ma demande.{" "}
+            <a href="/mentions-legales/#donnees">En savoir plus</a>
+          </label>
+          <p class="field__error" id="consent-error" data-error-for="consent"></p>
+        </div>
+
+        <div class="form__footer">
+          <button class="btn btn--primary" type="submit" data-submit>
+            <span data-submit-label>Envoyer le message</span>
+          </button>
+          <p class="form__status" role="status" aria-live="polite" data-status></p>
+        </div>
+      </form>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-grid {
+    display: grid;
+    gap: 3rem;
+  }
+  .coord {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--ink-2);
+    text-decoration: none;
+    transition: border-color 160ms ease;
+    overflow-wrap: anywhere;
+  }
+  .coord:hover {
+    border-color: var(--copper);
+  }
+  .coord :global(svg) {
+    width: 24px;
+    height: 24px;
+    flex: none;
+    color: var(--copper);
+  }
+  .coord span {
+    display: flex;
+    flex-direction: column;
+    font-weight: 700;
+  }
+  .coord small {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+  }
+
+  .form {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .form__row {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  label {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .opt {
+    font-weight: 400;
+    color: var(--cream-muted);
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--ink-2);
+    color: var(--cream);
+    font: inherit;
+    font-size: 1rem;
+  }
+  textarea {
+    resize: vertical;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--copper);
+    outline: 2px solid rgba(207, 138, 80, 0.35);
+    outline-offset: 0;
+  }
+  [aria-invalid='true'] {
+    border-color: #e07a6a;
+  }
+  .field__hint {
+    font-size: 0.85rem;
+    color: var(--cream-muted);
+  }
+  .field__error {
+    font-size: 0.85rem;
+    color: #f0998b;
+    min-height: 0;
+  }
+  .field__error:empty {
+    display: none;
+  }
+  .field--check {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 0.4rem 0.75rem;
+  }
+  .field--check input {
+    width: 22px;
+    min-height: 22px;
+    height: 22px;
+    margin-top: 0.15rem;
+    accent-color: var(--copper);
+  }
+  .field--check label {
+    font-weight: 400;
+    font-size: 0.92rem;
+    color: var(--cream-muted);
+  }
+  .field--check label a {
+    color: var(--copper);
+  }
+  .field--check .field__error {
+    grid-column: 2;
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .form__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+  .form__status {
+    font-weight: 600;
+  }
+  .form__status[data-state='success'] {
+    color: #9fcb8f;
+  }
+  .form__status[data-state='error'] {
+    color: #f0998b;
+  }
+  button[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  @media (min-width: 640px) {
+    .form__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 960px) {
+    .contact-grid {
+      grid-template-columns: 1fr 1.6fr;
+      gap: 4rem;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const status = document.querySelector<HTMLElement>('[data-status]');
+  const submit = document.querySelector<HTMLButtonElement>('[data-submit]');
+  const submitLabel = document.querySelector<HTMLElement>('[data-submit-label]');
+  const timeField = document.querySelector<HTMLInputElement>('[data-form-time]');
+  if (timeField) timeField.value = String(Date.now());
+
+  const messages: Record<string, string> = {
+    name: 'Indiquez votre nom.',
+    email: 'Indiquez une adresse e-mail valide.',
+    message: 'Votre message doit contenir au moins 10 caractères.',
+    consent: 'Votre accord est nécessaire pour que nous puissions vous répondre.',
+  };
+
+  function setError(name: string, text: string) {
+    const field = form?.elements.namedItem(name) as HTMLInputElement | null;
+    const slot = form?.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
+    if (field) field.setAttribute('aria-invalid', text ? 'true' : 'false');
+    if (slot) slot.textContent = text;
+  }
+
+  function validate(): boolean {
+    if (!form) return false;
+    let firstInvalid: HTMLElement | null = null;
+    for (const name of Object.keys(messages)) {
+      const el = form.elements.namedItem(name) as HTMLInputElement;
+      const ok = el.type === 'checkbox' ? el.checked : el.checkValidity() && el.value.trim().length > 0;
+      setError(name, ok ? '' : messages[name]);
+      if (!ok && !firstInvalid) firstInvalid = el;
+    }
+    firstInvalid?.focus();
+    return !firstInvalid;
+  }
+
+  function setStatus(text: string, state: 'success' | 'error' | '') {
+    if (!status) return;
+    status.textContent = text;
+    status.dataset.state = state;
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setStatus('', '');
+    if (!validate()) return;
+    submit!.disabled = true;
+    submitLabel!.textContent = 'Envoi…';
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        form.reset();
+        if (timeField) timeField.value = String(Date.now());
+        setStatus('Merci ! Votre message a bien été envoyé. Nous vous répondrons rapidement.', 'success');
+      } else if (data.fields) {
+        for (const [name, text] of Object.entries(data.fields as Record<string, string>)) setError(name, text);
+        setStatus('Certains champs sont à corriger.', 'error');
+      } else if (res.status === 503) {
+        setStatus('Le formulaire n’est pas encore activé. Écrivez-nous par e-mail ou appelez-nous.', 'error');
+      } else {
+        setStatus(data.error || 'L’envoi a échoué. Réessayez ou appelez-nous.', 'error');
+      }
+    } catch {
+      setStatus('Connexion impossible. Vérifiez votre réseau ou appelez-nous.', 'error');
+    } finally {
+      submit!.disabled = false;
+      submitLabel!.textContent = 'Envoyer le message';
+    }
+  });
+
+  // Retour du formulaire sans JavaScript (redirection ?envoye=1 / ?erreur=…).
+  const params = new URLSearchParams(location.search);
+  if (params.get('envoye') === '1') setStatus('Merci ! Votre message a bien été envoyé.', 'success');
+  else if (params.get('erreur')) setStatus('L’envoi a échoué. Écrivez-nous par e-mail ou appelez-nous.', 'error');
+</script>

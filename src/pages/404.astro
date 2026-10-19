@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<BaseLayout title="Page introuvable" description="Cette page n’existe pas ou a été déplacée. Retrouvez la carte, les horaires et l’accès à La Station Burger." noindex>
+  <section class="section">
+    <div class="container stack nf">
+      <p class="eyebrow">Erreur 404</p>
+      <h1>Mauvais quai.</h1>
+      <p class="lead">Cette page n’existe pas ou a changé d’adresse. Le bon train part d’ici :</p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href="/carte/"><Icon name="book" /> La carte</a>
+        <a class="btn" href="/">Accueil</a>
+        <a class="btn" href="/infos-pratiques/">Horaires & accès</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    min-height: 50vh;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+  }
+</style>

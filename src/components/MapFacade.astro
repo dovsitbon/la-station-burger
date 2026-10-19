@@ -1,0 +1,101 @@
+---
+/**
+ * Carte Google Maps chargée uniquement au clic : pas de cookies tiers
+ * ni de requêtes vers Google tant que le visiteur ne l’a pas demandé (RGPD, performance).
+ */
+import Icon from './Icon.astro';
+import { site, fullAddress, mapsEmbedUrl, mapsDirectionsUrl } from '../data/site';
+---
+
+<div class="map" data-map data-src={mapsEmbedUrl}>
+  <div class="map__placeholder">
+    <svg class="map__grid" viewBox="0 0 400 260" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+      <path d="M0 70h400M0 150h400M0 215h400M90 0v260M210 0v260M320 0v260" stroke="currentColor" stroke-width="1" />
+      <path d="M0 240L400 30" stroke="currentColor" stroke-width="5" opacity=".5" />
+    </svg>
+    <div class="map__content">
+      <Icon name="pin" class="map__pin" />
+      <p class="map__addr">{site.name}<br /><span>{fullAddress}</span></p>
+      <div class="btn-row">
+        <button type="button" class="btn btn--primary" data-map-load>Afficher la carte</button>
+        <a class="btn" href={mapsDirectionsUrl} target="_blank" rel="noopener">Itinéraire <Icon name="external" /></a>
+      </div>
+      <p class="map__note">Le chargement de la carte fait appel à Google Maps.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .map {
+    position: relative;
+    width: 100%;
+    height: clamp(360px, 42vw, 520px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--ink-3);
+  }
+  .map :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .map__placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+  }
+  .map__grid {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--line-strong);
+  }
+  .map__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+  }
+  .map__content .btn-row {
+    justify-content: center;
+  }
+  .map__content :global(.map__pin) {
+    width: 40px;
+    height: 40px;
+    color: var(--copper);
+  }
+  .map__addr {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .map__addr span {
+    font-weight: 400;
+    color: var(--cream-muted);
+  }
+  .map__note {
+    font-size: 0.78rem;
+    color: var(--cream-muted);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-map]').forEach((map) => {
+    map.querySelector('[data-map-load]')?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = map.dataset.src!;
+      iframe.title = 'Carte : La Station Burger, 41 rue de la Gare, Deuil-la-Barre';
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer-when-downgrade';
+      map.replaceChildren(iframe);
+      iframe.focus();
+    });
+  });
+</script>

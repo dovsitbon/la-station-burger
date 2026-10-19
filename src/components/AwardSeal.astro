@@ -1,0 +1,70 @@
+---
+/** Médaillon « horloge de gare » (motif du logo) portant la distinction 2025. */
+interface Props {
+  class?: string;
+}
+---
+
+<div class:list={['seal', Astro.props.class]} role="img" aria-label="Vainqueur Île-de-France, Coupe de France du Burger 2025">
+  <svg viewBox="0 0 200 200" aria-hidden="true">
+    <circle cx="100" cy="100" r="96" fill="#0f0d0b" stroke="#cf8a50" stroke-width="2" />
+    <circle cx="100" cy="100" r="86" fill="none" stroke="#cf8a50" stroke-width="0.8" stroke-dasharray="1 5.2" />
+    <text x="100" y="30" text-anchor="middle" class="num">XII</text>
+    <text x="178" y="105" text-anchor="middle" class="num">III</text>
+    <text x="100" y="185" text-anchor="middle" class="num">VI</text>
+    <text x="22" y="105" text-anchor="middle" class="num">IX</text>
+  </svg>
+  <div class="seal__text">
+    <span class="seal__top">Vainqueur</span>
+    <span class="seal__main">IDF</span>
+    <span class="seal__bottom">Coupe de France<br />du Burger 2025</span>
+  </div>
+</div>
+
+<style>
+  .seal {
+    position: relative;
+    width: 168px;
+    aspect-ratio: 1;
+  }
+  .seal svg {
+    width: 100%;
+    height: 100%;
+  }
+  .num {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    font-weight: 700;
+    fill: #cf8a50;
+  }
+  .seal__text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.1;
+  }
+  .seal__top {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--copper);
+  }
+  .seal__main {
+    font-family: var(--font-display);
+    font-size: 2.3rem;
+    color: var(--cream);
+    margin-block: 0.1rem 0.2rem;
+  }
+  .seal__bottom {
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cream-muted);
+  }
+</style>

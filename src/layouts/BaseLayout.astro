@@ -1,0 +1,115 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ActionBar from '../components/ActionBar.astro';
+import ProposalBanner from '../components/ProposalBanner.astro';
+import { site } from '../data/site';
+import { restaurantSchema, breadcrumbSchema } from '../lib/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Fil d’Ariane pour les pages internes. */
+  breadcrumb?: { name: string; path: string }[];
+  /** Données structurées supplémentaires propres à la page. */
+  schema?: object[];
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const { title, description, breadcrumb, schema = [], ogImage = '/og-image.jpg', noindex = false } = Astro.props;
+
+const base = Astro.site ?? new URL(site.url);
+const canonical = new URL(Astro.url.pathname, base).href;
+const fullTitle = Astro.url.pathname === '/' ? title : `${title} · ${site.name}`;
+const logoUrl = new URL('/logo-la-station.png', base).href;
+const ogUrl = new URL(ogImage, base).href;
+const robots = site.proposalMode || noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+
+const fontsUrl =
+  'https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,500;0,700;1,400&family=Ultra&display=swap';
+const jsonLd = [restaurantSchema(base, logoUrl), ...(breadcrumb ? [breadcrumbSchema(base, breadcrumb)] : []), ...schema];
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={robots} />
+    <meta name="theme-color" content="#0f0d0b" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="Résumé pour assistants IA" />
+
+    <meta property="og:type" content="restaurant.restaurant" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — ${site.tagline}, Deuil-la-Barre`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <meta name="geo.region" content="FR-95" />
+    <meta name="geo.placename" content={site.address.city} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Polices chargées sans bloquer le rendu (display=swap). -->
+    <link rel="preload" as="style" href={fontsUrl} />
+    <link rel="stylesheet" href={fontsUrl} media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href={fontsUrl} /></noscript>
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    {site.proposalMode && <ProposalBanner />}
+    <Header />
+    <main id="contenu">
+      <slot />
+    </main>
+    <Footer />
+    <ActionBar />
+
+    <script>
+      // Apparition discrète des blocs au scroll (désactivée si mouvement réduit).
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if ('IntersectionObserver' in window && items.length) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-visible');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+        );
+        items.forEach((el) => io.observe(el));
+      } else {
+        items.forEach((el) => el.classList.add('is-visible'));
+      }
+    </script>
+  </body>
+</html>

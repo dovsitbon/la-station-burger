@@ -1,0 +1,26 @@
+{
+  "name": "la-station-burger",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site vitrine de La Station Burger — burgers gourmets, Deuil-la-Barre",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "node --test tests/",
+    "check:seo": "node scripts/seo-check.mjs",
+    "check": "astro check"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.3"
+  }
+}

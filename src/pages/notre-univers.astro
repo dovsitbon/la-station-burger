@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import AwardSeal from '../components/AwardSeal.astro';
+import { site } from '../data/site';
+
+const pillars = [
+  {
+    title: 'Le burger gourmet',
+    text: "Des recettes américaines revisitées : steak du boucher frais, fromages travaillés (burrata, chèvre, raclette, blue cheese, cheddar noir maturé) et sauces maison.",
+  },
+  {
+    title: 'Le steak house',
+    text: "Entrecôte, pièce du boucher choisie selon les arrivages, filet de poulet mariné : la cuisson se choisit, l’accompagnement et la sauce aussi.",
+  },
+  {
+    title: 'Le fait maison',
+    text: 'Frites fraîches maison en double cuisson, pommes de terre de la région, sauces maison et desserts préparés par la pâtissière de la maison.',
+  },
+];
+---
+
+<BaseLayout
+  title="Notre univers — burger gourmet & steak house"
+  description="La Station Burger à Deuil-la-Barre : burger gourmet et steak house d’inspiration américaine, steak frais, frites maison et desserts de pâtissière."
+  breadcrumb={[{ name: 'Notre univers', path: '/notre-univers/' }]}
+>
+  <PageHeader
+    eyebrow="Notre univers"
+    title="Burger gourmet, steak house et fait maison"
+    lead="Rue de la Gare, à Deuil-la-Barre, La Station revisite les classiques américains avec des produits frais et un vrai savoir-faire de cuisine."
+  />
+
+  <section class="section">
+    <div class="container pillars">
+      {
+        pillars.map((p, i) => (
+          <article class="pillar" data-reveal style={`--i:${i}`}>
+            <span class="pillar__n">{['I', 'II', 'III'][i]}</span>
+            <h2>{p.title}</h2>
+            <p>{p.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container split">
+      <Photo name="grill-fire" sizes="(min-width: 960px) 44vw, 92vw" ratio="4 / 5" />
+      <div class="stack">
+        <p class="eyebrow">Derrière le comptoir</p>
+        <h2>Une cuisine pensée par Tanesh Thanaratnam</h2>
+        <p class="lead">
+          Gérant de La Station, Tanesh Thanaratnam a fait ses armes comme responsable de cuisine, notamment à Londres
+          dans le street-food premium. Il participe à l’élaboration de la carte et encadre la cuisine comme la salle.
+        </p>
+        <p>
+          C’est lui qui a imaginé le Tissot de la Varenne, le burger qui a remporté la finale Île-de-France de la
+          Coupe de France du Burger 2025.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="/tissot-de-la-varenne/">Découvrir le burger primé <Icon name="arrow" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split split--reverse">
+      <div class="stack">
+        <p class="eyebrow">L’identité</p>
+        <h2>Une station, une horloge</h2>
+        <p class="lead">
+          Le logo de La Station reprend le cadran d’une horloge de gare — XII, III, VI, IX — à l’image de son nom.
+
+        </p>
+        <p class="muted">
+          Noir, cuivre et crème : les couleurs du restaurant se retrouvent sur sa carte, son logo et ce site.
+        </p>
+      </div>
+      <div class="identity">
+        <AwardSeal />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="container cta">
+      <h2>Envie de goûter ?</h2>
+      <p class="lead">Sur place, à emporter ou en livraison, tous les jours.</p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href="/carte/">Voir la carte</a>
+        <a class="btn" href="/commander/">Commander</a>
+        <a class="btn" href={`tel:${site.phone.e164}`}><Icon name="phone" /> {site.phone.display}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .pillars {
+    display: grid;
+    gap: 1rem;
+  }
+  .pillar {
+    padding: 2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--ink-2);
+  }
+  .pillar__n {
+    font-family: Georgia, serif;
+    font-weight: 700;
+    color: var(--copper);
+    letter-spacing: 0.1em;
+  }
+  .pillar h2 {
+    font-size: 1.7rem;
+    margin-block: 0.75rem;
+  }
+  .pillar p {
+    color: var(--cream-muted);
+  }
+  .split {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .muted {
+    color: var(--cream-muted);
+  }
+  .identity {
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+  }
+  .identity :global(.seal) {
+    width: min(280px, 70vw);
+  }
+  .cta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+  @media (min-width: 860px) {
+    .pillars {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .split {
+      grid-template-columns: 1fr 1fr;
+      gap: 4.5rem;
+    }
+    .split--reverse > :first-child {
+      order: 0;
+    }
+  }
+</style>

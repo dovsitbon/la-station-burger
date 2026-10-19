@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { site, fullAddress } from '../data/site';
+import { photos } from '../data/images';
+
+const placeholders = Object.entries(photos).filter(([, p]) => p.placeholder);
+---
+
+<BaseLayout
+  title="Mentions légales, données & crédits"
+  description="Mentions légales du site de La Station Burger, politique de données personnelles et crédits photo."
+  breadcrumb={[{ name: 'Mentions légales', path: '/mentions-legales/' }]}
+  noindex
+>
+  <PageHeader eyebrow="Informations" title="Mentions légales & crédits" />
+
+  <section class="section">
+    <div class="container prose">
+      <h2>Éditeur</h2>
+      <p>
+        {site.legal.company} — exploitant de {site.name}<br />
+        Établissement : {fullAddress}<br />
+        Siège : {site.legal.registeredAddress}<br />
+        SIRET : {site.legal.siret}<br />
+        Téléphone : {site.phone.display} · E-mail : <a href={`mailto:${site.email}`}>{site.email}</a><br />
+        Directeur de la publication : {site.legal.publicationDirector}
+      </p>
+
+      <h2>Hébergement</h2>
+      <p>{site.legal.host}</p>
+
+      <h2 id="donnees">Données personnelles</h2>
+      <p>
+        Le formulaire de contact recueille votre nom, votre e-mail, éventuellement votre téléphone, et votre message,
+        dans le seul but de vous répondre. Ces données sont transmises par e-mail au restaurant et ne sont ni revendues ni
+        utilisées à des fins publicitaires. Elles sont conservées le temps nécessaire au traitement de votre demande.
+      </p>
+      <p>
+        Conformément au RGPD, vous pouvez demander l’accès, la rectification ou la suppression de vos données en écrivant à
+        <a href={`mailto:${site.email}`}>{site.email}</a>. Vous pouvez aussi adresser une réclamation à la CNIL (cnil.fr).
+      </p>
+
+      <h2>Cookies</h2>
+      <p>
+        Ce site ne dépose aucun cookie de mesure d’audience ni de publicité. La carte Google Maps n’est chargée que si vous
+        cliquez sur « Afficher la carte » ; Google peut alors déposer ses propres cookies. Les liens vers Uber Eats,
+        Deliveroo, Instagram et Facebook mènent vers des services tiers soumis à leurs propres conditions.
+      </p>
+
+      <h2>Crédits</h2>
+      <p>Logo et marque La Station : propriété de {site.legal.company}.</p>
+      {
+        placeholders.length > 0 && (
+          <p>
+            Photos d’illustration provisoires, sous licence Unsplash (unsplash.com/license) : elles ne représentent pas les
+            plats du restaurant et sont signalées comme telles sur le site ({placeholders.length} images).
+          </p>
+        )
+      }
+      <p>Typographies : Ultra et Karla (Google Fonts, licence SIL Open Font License).</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose {
+    max-width: 72ch;
+  }
+  .prose h2 {
+    font-size: 1.6rem;
+    margin: 2.5rem 0 0.75rem;
+  }
+  .prose h2:first-child {
+    margin-top: 0;
+  }
+  .prose p {
+    color: var(--cream-muted);
+    margin-bottom: 0.9rem;
+  }
+  .prose a {
+    color: var(--copper);
+  }
+</style>

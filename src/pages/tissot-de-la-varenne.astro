@@ -1,0 +1,287 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import AwardSeal from '../components/AwardSeal.astro';
+import { signature, formatPrice } from '../data/menu';
+import { site, telHref } from '../data/site';
+import { faqSchema } from '../lib/schema';
+
+const layers = [
+  { name: 'Pain brioché façon carrot cake', text: 'La carotte du bœuf carotte, passée côté pâtisserie.' },
+  { name: 'Steak du boucher 130 g', text: 'Bœuf saisi, cuit à la commande.' },
+  { name: 'Bœuf effiloché ultra-fondant', text: 'Le côté mijoté du plat d’origine.' },
+  { name: 'Pickles de carotte au cumin', text: 'Pour la touche peps.' },
+  { name: 'Kumquat confit au miel', text: 'Une douceur acidulée.' },
+  { name: 'Cheddar noir maturé', text: 'Pour le caractère.' },
+  { name: 'Sauce crémeuse au jus de cuisson', text: 'Le liant, issu de la cuisson du bœuf.' },
+  { name: 'Pomme paille', text: 'Pour le croquant.' },
+];
+
+const faqs = [
+  {
+    q: 'Qu’est-ce que le Tissot de la Varenne ?',
+    a: `C’est le burger signature de La Station Burger à Deuil-la-Barre, inspiré du bœuf carotte de François Pierre de La Varenne. Il associe pain brioché façon carrot cake, steak du boucher 130 g, bœuf effiloché, pickles de carotte au cumin, kumquat confit au miel, cheddar noir maturé et pomme paille.`,
+  },
+  {
+    q: 'Quelle distinction a reçu ce burger ?',
+    a: "Il a remporté la finale régionale Île-de-France de la Coupe de France du Burger 2025, organisée par Socopa, sur le thème du burger bistronomique. Il s’est ensuite classé 5e de la finale nationale du 2 avril 2025 à Paris.",
+  },
+  {
+    q: 'Combien coûte le Tissot de la Varenne ?',
+    a: `${formatPrice(signature.price!)} seul et ${formatPrice(signature.menuPrice!)} en menu avec frites fraîches maison et boisson, d’après la carte ${site.menuUpdated}.`,
+  },
+];
+---
+
+<BaseLayout
+  title="Tissot de la Varenne, burger vainqueur IDF 2025"
+  description="Le Tissot de la Varenne, burger de La Station à Deuil-la-Barre, vainqueur de la finale Île-de-France de la Coupe de France du Burger 2025 : recette, histoire, prix."
+  breadcrumb={[{ name: 'Le Tissot de la Varenne', path: '/tissot-de-la-varenne/' }]}
+  schema={[faqSchema(faqs)]}
+>
+  <section class="t-hero">
+    <div class="container t-hero__grid">
+      <div class="stack t-hero__copy">
+        <p class="eyebrow">Le burger primé</p>
+        <h1>Le Tissot de la Varenne</h1>
+        <p class="lead">
+          Le bœuf carotte d’un cuisinier du XVIIe siècle, réinterprété en burger bistronomique. Avec lui, La Station a
+          remporté la finale Île-de-France de la Coupe de France du Burger 2025.
+        </p>
+        <p class="t-price">
+          <span>Seul <strong>{formatPrice(signature.price!)}</strong></span>
+          <span>En menu <strong>{formatPrice(signature.menuPrice!)}</strong></span>
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="/commander/"><Icon name="bag" /> Le commander</a>
+          <a class="btn" href={telHref}><Icon name="phone" /> {site.phone.display}</a>
+        </div>
+      </div>
+      <div class="t-hero__visual">
+        <Photo name="signature-burger" sizes="(min-width: 960px) 46vw, 92vw" ratio="1 / 1" eager />
+        <AwardSeal />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container t-layers">
+      <div class="stack">
+        <p class="eyebrow">Composition</p>
+        <h2>Huit couches, une recette</h2>
+        <p class="lead">Telle que décrite sur la carte du restaurant.</p>
+      </div>
+      <ol class="layers">
+        {
+          layers.map((l, i) => (
+            <li data-reveal style={`--i:${i}`}>
+              <span class="layers__n">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <h3>{l.name}</h3>
+                <p>{l.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container story">
+      <div class="stack">
+        <p class="eyebrow">L’histoire</p>
+        <h2>De La Varenne à la rue de la Gare</h2>
+      </div>
+      <div class="stack story__text">
+        <p>
+          Son nom rend hommage à François Pierre de La Varenne, cuisinier français auteur en 1651 du
+          <em>Cuisinier françois</em>, qui y proposait un bœuf à la carotte. La recette de La Station
+          garde l’esprit du plat mijoté — bœuf fondant, carotte, sauce au jus — et le fait tenir dans un burger.
+        </p>
+        <p>
+          Le burger a été conçu par Tanesh Thanaratnam, gérant de La Station, pour la Coupe de France du Burger
+          organisée par Socopa. Le thème de l’édition 2025 : le burger bistronomique, jugé sur le respect du thème, la
+          technique, la présentation et le goût.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="container">
+      <div class="stack" style="margin-bottom:2.5rem">
+        <p class="eyebrow">Le palmarès</p>
+        <h2>Coupe de France du Burger 2025</h2>
+      </div>
+      <ol class="timeline">
+        <li data-reveal>
+          <p class="timeline__when">Finale régionale</p>
+          <h3>Vainqueur Île-de-France</h3>
+          <p>Le Tissot de la Varenne remporte la finale régionale face aux autres candidats franciliens et se qualifie pour la finale nationale.</p>
+        </li>
+        <li data-reveal style="--i:1">
+          <p class="timeline__when">2 avril 2025 · Paris</p>
+          <h3>5e de la finale nationale</h3>
+          <p>Finale nationale au Snack Show de Paris, devant un jury de professionnels.</p>
+        </li>
+      </ol>
+      <p class="sources">
+        Sources :
+        <a href="https://www.lebonbon.fr/paris/actu/meilleur-burger-ile-france-2025/" target="_blank" rel="noopener">Le Bonbon</a>,
+        <a href="https://www.contact-entreprises.net/amateur-de-burger-lun-des-meilleurs-de-france-est-a-deuil-la-barre/" target="_blank" rel="noopener">Contact Entreprises</a>,
+        <a href="https://www.socoparestauration.fr/editions-cdfb/2025-burger-bistronomique/" target="_blank" rel="noopener">Socopa Restauration</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container faq">
+      <h2>Questions fréquentes</h2>
+      <div>
+        {
+          faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .t-hero {
+    padding-block: clamp(2.5rem, 6vw, 5rem);
+  }
+  .t-hero__grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  .t-hero__visual {
+    position: relative;
+    max-width: 560px;
+    width: 100%;
+    justify-self: center;
+  }
+  .t-hero__visual :global(.seal) {
+    position: absolute;
+    right: -10px;
+    bottom: -26px;
+    width: 130px;
+  }
+  .t-price {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    font-size: 1.05rem;
+  }
+  .t-price strong {
+    font-size: 1.5rem;
+    margin-left: 0.3rem;
+    color: var(--copper);
+  }
+  .t-layers {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .layers {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0 2.5rem;
+  }
+  .layers li {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid rgba(27, 21, 16, 0.15);
+  }
+  .layers__n {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--copper-deep);
+    min-width: 2ch;
+  }
+  .layers h3 {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 1.08rem;
+  }
+  .layers p {
+    color: var(--paper-muted);
+    font-size: 0.95rem;
+  }
+  .story {
+    display: grid;
+    gap: 2rem;
+  }
+  .story__text {
+    font-size: 1.1rem;
+    max-width: 62ch;
+  }
+  .story__text p {
+    color: var(--cream-muted);
+  }
+  .timeline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1rem;
+  }
+  .timeline li {
+    padding: 1.75rem;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--copper);
+    border-radius: var(--radius-lg);
+    background: var(--ink);
+  }
+  .timeline h3 {
+    margin-block: 0.3rem 0.6rem;
+  }
+  .timeline p {
+    color: var(--cream-muted);
+  }
+  .timeline__when {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--copper) !important;
+  }
+  .sources {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--cream-muted);
+  }
+  .faq {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 800px) {
+    .layers {
+      grid-template-columns: 1fr 1fr;
+    }
+    .timeline {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 960px) {
+    .t-hero__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+    .t-layers,
+    .story,
+    .faq {
+      grid-template-columns: 1fr 2fr;
+      gap: 4rem;
+    }
+  }
+</style>

@@ -1,0 +1,208 @@
+---
+import Icon from './Icon.astro';
+import { site, fullAddress, telHref, mapsDirectionsUrl, groupedHours, activeOrdering } from '../data/site';
+import { nav } from '../data/nav';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <p class="footer-name" translate="no">La Station</p>
+      <p class="footer-tag">{site.tagline}</p>
+      <p class="footer-award"><Icon name="medal" /> {site.award.short}</p>
+      <ul class="socials" aria-label="Réseaux sociaux">
+        <li>
+          <a href={site.social.instagram.url} target="_blank" rel="noopener">
+            <Icon name="instagram" label="Instagram de La Station Burger" />
+          </a>
+        </li>
+        <li>
+          <a href={site.social.facebook.url} target="_blank" rel="noopener">
+            <Icon name="facebook" label="Facebook de La Station Burger" />
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer-h">Nous trouver</h2>
+      <address>
+        <a href={mapsDirectionsUrl} target="_blank" rel="noopener">{fullAddress}</a><br />
+        <a href={telHref}>{site.phone.display}</a><br />
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </address>
+    </div>
+
+    <div>
+      <h2 class="footer-h">Horaires</h2>
+      <dl class="footer-hours">
+        {
+          groupedHours().map((g) => (
+            <div>
+              <dt>{g.days}</dt>
+              <dd>{g.time}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <div>
+      <h2 class="footer-h">Pages</h2>
+      <ul class="footer-links">
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        <li><a href="/commander/">Commander</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer-h">Livraison</h2>
+      <ul class="footer-links">
+        {
+          activeOrdering.map((o) => (
+            <li>
+              <a href={o.url} target="_blank" rel="noopener">{o.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© {year} {site.name} · Deuil-la-Barre (95)</p>
+    <p><a href="/mentions-legales/">Mentions légales & crédits</a></p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ink-2);
+    border-top: 1px solid var(--line);
+    padding-top: 4rem;
+    font-size: 0.95rem;
+  }
+  .footer-grid {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+  }
+  .footer-name {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .footer-tag {
+    margin-top: 0.4rem;
+    color: var(--copper);
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .footer-award {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    color: var(--cream-muted);
+  }
+  .footer-award :global(svg) {
+    width: 20px;
+    height: 20px;
+    color: var(--copper);
+    flex: none;
+  }
+  .socials {
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 1.25rem 0 0;
+  }
+  .socials a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    transition: border-color 160ms ease;
+  }
+  .socials a:hover {
+    border-color: var(--copper);
+  }
+  .socials :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+  .footer-h {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.9rem;
+  }
+  address {
+    font-style: normal;
+    line-height: 1.9;
+  }
+  address a,
+  .footer-links a {
+    color: var(--cream-muted);
+    text-decoration: none;
+  }
+  address a:hover,
+  .footer-links a:hover {
+    color: var(--cream);
+    text-decoration: underline;
+  }
+  .footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    line-height: 2;
+  }
+  .footer-hours {
+    margin: 0;
+  }
+  .footer-hours div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.25rem;
+  }
+  .footer-hours dt {
+    color: var(--cream-muted);
+  }
+  .footer-hours dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    margin-top: 3.5rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--cream-muted);
+    font-size: 0.85rem;
+  }
+  .footer-bottom a {
+    color: inherit;
+  }
+  @media (min-width: 640px) {
+    .footer-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .footer-grid {
+      grid-template-columns: 1.4fr 1.2fr 1fr 0.8fr 0.8fr;
+    }
+  }
+</style>

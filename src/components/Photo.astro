@@ -1,0 +1,34 @@
+---
+import { Image } from 'astro:assets';
+import { photo } from '../data/images';
+
+interface Props {
+  name: string;
+  widths?: number[];
+  sizes: string;
+  /** Ratio CSS forcé (ex. "4 / 5"). */
+  ratio?: string;
+  eager?: boolean;
+  class?: string;
+  /** Remplace le texte alternatif par défaut. */
+  alt?: string;
+}
+
+const { name, widths = [480, 800, 1200, 1600], sizes, ratio, eager = false, class: cls, alt } = Astro.props;
+const p = photo(name);
+---
+
+<figure class:list={['figure', cls]} style={ratio ? `aspect-ratio:${ratio}` : undefined}>
+  <Image
+    src={p.src}
+    alt={alt ?? p.alt}
+    widths={widths.filter((w) => w <= p.src.width)}
+    sizes={sizes}
+    format="webp"
+    quality={72}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    decoding={eager ? 'sync' : 'async'}
+  />
+  {p.placeholder && <figcaption class="placeholder-tag">Photo d’illustration</figcaption>}
+</figure>

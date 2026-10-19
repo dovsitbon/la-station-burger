@@ -1,0 +1,507 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Photo from '../components/Photo.astro';
+import AwardSeal from '../components/AwardSeal.astro';
+import OpenStatus from '../components/OpenStatus.astro';
+import OrderOptions from '../components/OrderOptions.astro';
+import MapFacade from '../components/MapFacade.astro';
+import { site, telHref, fullAddress, groupedHours, mapsDirectionsUrl } from '../data/site';
+import { menu, signature, highlights, formatPrice } from '../data/menu';
+
+const allItems = menu.flatMap((c) => c.items);
+const burgerCount = menu.filter((c) => ['signature', 'burgers', 'gourmands'].includes(c.id)).reduce((n, c) => n + c.items.length, 0);
+const featured = highlights.map((n) => allItems.find((i) => i.name === n)!).filter(Boolean);
+
+const minPrice = (id: string) => {
+  const cat = menu.find((c) => c.id === id)!;
+  return Math.min(...cat.items.map((i) => i.price ?? Infinity));
+};
+
+const universes = [
+  { id: 'steakhouse', title: 'Steakhouse', text: 'Entrecôte, pièce du boucher, fish & chips.', photo: 'steak' },
+  { id: 'hot-dogs', title: 'Hot-dogs', text: 'Pain brioché, saucisse de volaille, quatre recettes.', photo: 'hotdog' },
+  { id: 'bagels', title: 'Bagels', text: 'Rome, Oslo, Dublin, Buffalo.', photo: 'bagel' },
+  { id: 'desserts', title: 'Desserts maison', text: 'Signés par notre pâtissière : cheesecake, tiramisu, brownie.', photo: 'cheesecake' },
+];
+
+const promises = [
+  { title: 'Steak 100 % frais', text: 'Steak du boucher, 100 ou 130 g selon la recette.' },
+  { title: 'Pain frais', text: 'Chaque burger est servi dans du pain frais.' },
+  { title: 'Frites fraîches maison', text: 'Pommes de terre de la région, double cuisson.' },
+  { title: 'Desserts de pâtissière', text: 'Préparés par la pâtissière professionnelle de la maison.' },
+];
+---
+
+<BaseLayout
+  title="La Station Burger — Burgers gourmets à Deuil-la-Barre (95)"
+  description="Burgers gourmets et steakhouse à Deuil-la-Barre (41 rue de la Gare) : steak frais, frites maison, burger vainqueur IDF 2025. Sur place, à emporter, livraison."
+>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">Burger gourmet · Steak house · Deuil-la-Barre</p>
+        <h1>Le burger gourmet, version Station.</h1>
+        <p class="lead">
+          Steak du boucher frais, pain frais, frites fraîches maison. Et le Tissot de la Varenne, vainqueur de la
+          finale Île-de-France de la Coupe de France du Burger 2025.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="/carte/"><Icon name="book" /> Voir la carte & les prix</a>
+          <a class="btn" href="/commander/"><Icon name="bag" /> Commander</a>
+          <a class="btn" href={telHref}><Icon name="phone" /> {site.phone.display}</a>
+        </div>
+        <div class="hero__meta">
+          <OpenStatus />
+          <a class="hero__addr" href={mapsDirectionsUrl} target="_blank" rel="noopener">
+            <Icon name="pin" />
+            {fullAddress}
+          </a>
+        </div>
+      </div>
+      <div class="hero__visual">
+        <Photo name="hero-burger" sizes="(min-width: 960px) 46vw, 92vw" ratio="4 / 5" eager />
+        <AwardSeal class="hero__seal" />
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMESSES -->
+  <section class="promises" aria-label="Nos engagements">
+    <div class="container">
+      <ul class="promises__list" role="list">
+        {
+          promises.map((p, i) => (
+            <li data-reveal style={`--i:${i}`}>
+              <Icon name="check" />
+              <div>
+                <p class="promises__title">{p.title}</p>
+                <p class="promises__text">{p.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- SIGNATURE -->
+  <section class="section section--paper signature">
+    <div class="container signature__grid">
+      <div class="signature__visual" data-reveal>
+        <Photo name="signature-burger" sizes="(min-width: 960px) 44vw, 92vw" ratio="5 / 4" />
+      </div>
+      <div class="stack signature__copy" data-reveal style="--i:1">
+        <p class="eyebrow">Le burger primé</p>
+        <h2>{signature.name}</h2>
+        <p class="lead">
+          Un hommage au bœuf carotte de François Pierre de La Varenne, cuisinier du XVIIe siècle, revisité en burger
+          bistronomique. Il a remporté la finale régionale Île-de-France de la Coupe de France du Burger 2025.
+        </p>
+        <ul class="signature__list" role="list">
+          <li>Pain brioché façon carrot cake</li>
+          <li>Steak du boucher 130 g & bœuf effiloché fondant</li>
+          <li>Pickles de carotte au cumin, kumquat confit au miel</li>
+          <li>Cheddar noir maturé, sauce crémeuse au jus de cuisson</li>
+          <li>Pomme paille pour le croquant</li>
+        </ul>
+        <p class="signature__price">
+          <span>Seul <strong>{formatPrice(signature.price!)}</strong></span>
+          <span>En menu <strong>{formatPrice(signature.menuPrice!)}</strong></span>
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="/tissot-de-la-varenne/">Son histoire <Icon name="arrow" /></a>
+          <a class="btn" href="/commander/">Le commander</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INCONTOURNABLES -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div class="stack">
+          <p class="eyebrow">Les incontournables</p>
+          <h2>{burgerCount} burgers à la carte</h2>
+        </div>
+        <a class="text-link" href="/carte/#burgers">Toute la carte des burgers</a>
+      </div>
+      <ul class="tickets" role="list">
+        {
+          featured.map((item, i) => (
+            <li class="ticket" data-reveal style={`--i:${i}`}>
+              <h3 class="ticket__name">{item.name}</h3>
+              <p class="ticket__desc">{item.description}</p>
+              <p class="ticket__price">
+                <span>Seul {formatPrice(item.price!)}</span>
+                <span class="ticket__menu">Menu {formatPrice(item.menuPrice!)}</span>
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- AU-DELÀ DES BURGERS -->
+  <section class="section section--raised">
+    <div class="container">
+      <div class="section-head">
+        <div class="stack">
+          <p class="eyebrow">Au-delà des burgers</p>
+          <h2>Steakhouse, hot-dogs, bagels</h2>
+        </div>
+        <a class="text-link" href="/carte/">Voir toute la carte</a>
+      </div>
+      <ul class="universes" role="list">
+        {
+          universes.map((u, i) => (
+            <li data-reveal style={`--i:${i}`}>
+              <a class="universe" href={`/carte/#${u.id}`}>
+                <Photo name={u.photo} sizes="(min-width: 1000px) 25vw, (min-width: 600px) 46vw, 92vw" ratio="4 / 5" widths={[400, 700, 1000]} />
+                <div class="universe__body">
+                  <h3>{u.title}</h3>
+                  <p>{u.text}</p>
+                  <p class="universe__from">À partir de {formatPrice(minPrice(u.id))}</p>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- COMMANDER -->
+  <section class="section" id="commander">
+    <div class="container stack" style="--stack:2.5rem">
+      <div class="stack">
+        <p class="eyebrow">Commander</p>
+        <h2>Sur place, à emporter ou livré</h2>
+      </div>
+      <OrderOptions />
+    </div>
+  </section>
+
+  <!-- INFOS -->
+  <section class="section section--raised">
+    <div class="container infos">
+      <div class="stack infos__copy">
+        <p class="eyebrow">Infos pratiques</p>
+        <h2>41 rue de la Gare, Deuil-la-Barre</h2>
+        <p class="lead">{site.access.train}</p>
+        <dl class="hours">
+          {
+            groupedHours().map((g) => (
+              <div>
+                <dt>{g.days}</dt>
+                <dd>{g.time}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <OpenStatus />
+        <div class="btn-row">
+          <a class="btn btn--primary" href={mapsDirectionsUrl} target="_blank" rel="noopener"><Icon name="pin" /> Itinéraire</a>
+          <a class="btn" href="/infos-pratiques/">Toutes les infos</a>
+        </div>
+      </div>
+      <MapFacade />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 7vw, 6rem);
+    overflow: hidden;
+  }
+  .hero__grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  .hero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .hero h1 {
+    max-width: 12ch;
+  }
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.75rem;
+    align-items: center;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--line);
+    padding-top: 1.25rem;
+  }
+  .hero__addr {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--cream-muted);
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+  .hero__addr:hover {
+    color: var(--cream);
+  }
+  .hero__addr :global(svg) {
+    width: 18px;
+    height: 18px;
+    color: var(--copper);
+  }
+  .hero__visual {
+    position: relative;
+    max-width: 560px;
+    width: 100%;
+    justify-self: center;
+  }
+  .hero__visual :global(.seal) {
+    position: absolute;
+    right: -8px;
+    bottom: -28px;
+    width: 128px;
+  }
+  .hero .btn-row :global(.btn) {
+    flex: 1 1 auto;
+  }
+
+  /* Promesses */
+  .promises {
+    border-block: 1px solid var(--line);
+    background: var(--ink-2);
+  }
+  .promises__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .promises__list li {
+    display: flex;
+    gap: 0.9rem;
+    padding: 1.4rem 0;
+  }
+  .promises__list li + li {
+    border-top: 1px solid var(--line);
+  }
+  .promises__list :global(svg) {
+    width: 22px;
+    height: 22px;
+    flex: none;
+    color: var(--copper);
+    margin-top: 0.15rem;
+  }
+  .promises__title {
+    font-weight: 700;
+  }
+  .promises__text {
+    color: var(--cream-muted);
+    font-size: 0.93rem;
+  }
+
+  /* Signature */
+  .signature__grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .signature__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid rgba(27, 21, 16, 0.15);
+  }
+  .signature__list li {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(27, 21, 16, 0.15);
+  }
+  .signature__price {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    font-size: 1.05rem;
+  }
+  .signature__price strong {
+    font-size: 1.35rem;
+    margin-left: 0.25rem;
+  }
+
+  /* Section head */
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  /* Tickets */
+  .tickets {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ticket {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.6rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 0 50%, var(--ink) 9px, transparent 10px) left center / 20px 100% no-repeat,
+      var(--ink-2);
+  }
+  .ticket__name {
+    font-size: 1.7rem;
+  }
+  .ticket__desc {
+    color: var(--cream-muted);
+    font-size: 0.95rem;
+    flex: 1;
+  }
+  .ticket__price {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px dashed var(--line-strong);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .ticket__menu {
+    color: var(--copper);
+  }
+
+  /* Univers */
+  .universes {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .universe {
+    display: block;
+    position: relative;
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .universe :global(.figure) {
+    border-radius: 0;
+  }
+  .universe :global(img) {
+    transition: transform 600ms var(--ease-out);
+  }
+  .universe:hover :global(img) {
+    transform: scale(1.04);
+  }
+  .universe :global(.placeholder-tag) {
+    top: 0.6rem;
+    bottom: auto;
+  }
+  .universe__body {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 4rem 1.25rem 1.25rem;
+    background: linear-gradient(to top, rgba(15, 13, 11, 0.95) 30%, rgba(15, 13, 11, 0));
+  }
+  .universe__body h3 {
+    font-size: 1.5rem;
+  }
+  .universe__body p {
+    color: var(--cream-muted);
+    font-size: 0.92rem;
+    margin-top: 0.3rem;
+  }
+  .universe__body .universe__from {
+    color: var(--copper);
+    font-weight: 700;
+  }
+
+  /* Infos */
+  .infos {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .hours {
+    margin: 0;
+    max-width: 380px;
+  }
+  .hours div {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .hours dt {
+    color: var(--cream-muted);
+  }
+  .hours dd {
+    margin: 0;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 600px) {
+    .tickets,
+    .universes {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .promises__list {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 2rem;
+    }
+    .promises__list li + li {
+      border-top: 0;
+    }
+  }
+  @media (min-width: 960px) {
+    .hero__grid {
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 4rem;
+    }
+    .hero__visual :global(.seal) {
+      width: 168px;
+      right: auto;
+      left: -60px;
+      bottom: 40px;
+    }
+    .hero__visual :global(.placeholder-tag) {
+      left: auto;
+      right: 0.6rem;
+    }
+    .hero .btn-row :global(.btn) {
+      flex: 0 0 auto;
+    }
+    .signature__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 4.5rem;
+    }
+    .infos {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 4rem;
+    }
+  }
+  @media (min-width: 1000px) {
+    .tickets,
+    .universes,
+    .promises__list {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

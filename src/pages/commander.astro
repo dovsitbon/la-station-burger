@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import OrderOptions from '../components/OrderOptions.astro';
+import Icon from '../components/Icon.astro';
+import { groupedHours } from '../data/site';
+---
+
+<BaseLayout
+  title="Commander — livraison, à emporter, sur place"
+  description="Commandez chez La Station Burger à Deuil-la-Barre : livraison via Uber Eats ou Deliveroo, à emporter par téléphone au 01 34 05 34 75, ou sur place au 41 rue de la Gare."
+  breadcrumb={[{ name: 'Commander', path: '/commander/' }]}
+>
+  <PageHeader
+    eyebrow="Commander"
+    title="Livré, à emporter ou sur place"
+    lead="Choisissez la formule qui vous arrange. Le paiement se fait sur la plateforme de livraison ou au restaurant : aucun paiement n’est demandé sur ce site."
+  />
+
+  <section class="section">
+    <div class="container stack" style="--stack:3rem">
+      <OrderOptions />
+
+      <div class="hint">
+        <div class="stack" style="--stack:0.6rem">
+          <h2 class="hint__title">Pas encore choisi ?</h2>
+          <p>Consultez la carte complète et les prix avant de commander.</p>
+        </div>
+        <a class="btn btn--primary" href="/carte/"><Icon name="book" /> Voir la carte</a>
+      </div>
+
+      <p class="fine">
+        Horaires : {groupedHours().map((g) => `${g.days} ${g.time}`).join(' · ')}. La disponibilité de la livraison dépend de
+        votre adresse et des plateformes.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hint {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius-lg);
+  }
+  .hint__title {
+    font-size: 1.6rem;
+  }
+  .hint p,
+  .fine {
+    color: var(--cream-muted);
+  }
+  .fine {
+    font-size: 0.9rem;
+  }
+</style>
